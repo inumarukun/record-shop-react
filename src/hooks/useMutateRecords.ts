@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Record } from '../types'
 import useRecord from '../store'
 import { useError } from './useError'
+import { useLoading } from '../components/LoadingContext'
 
 // カスタムフックは複数のコンポーネントの中に存在する共通の処理を取り出して作成した関数
 export const useMutateRecords = () => {
@@ -12,6 +13,7 @@ export const useMutateRecords = () => {
   const queryClient = useQueryClient()
   const { switchErrorHandling } = useError()
   const resetEditedRecord = useRecord((state) => state.resetEditedRecord)
+  const { setIsLoading } = useLoading()
 
   // jsの関数は呼出される前に定義してないと駄目
   // const で定義された関数や変数は「ホイスティング（巻上げ）」されないため、
@@ -44,8 +46,12 @@ export const useMutateRecords = () => {
         record
       ),
     {
+      onMutate: () => {
+        setIsLoading(true)
+      },
       // mutationFn の戻り値に基づいて自動的に型推論
       onSuccess: (res) => {
+        setIsLoading(false)
         // 成功したらキャッシュ中のRecord一覧取得、cache: 'records'は
         // useQueryRecords.tsのuseQueryで定義
         // useQueryは、react-queryの機能で、useQueryTasks.tsではプロパティを定義しているだけ
@@ -78,6 +84,7 @@ export const useMutateRecords = () => {
       },
       // エラーオブジェクトがどのような形を取るかが不確定なため、型をanyに指定
       onError: (err: any) => {
+        setIsLoading(false)
         if (err.response.data.message) {
           switchErrorHandling(err.response.data.message)
         } else {
@@ -100,6 +107,9 @@ export const useMutateRecords = () => {
         }
       ),
     {
+      onMutate: () => {
+        setIsLoading(true)
+      },
       // putの場合は、レスポンスデータと、 (更新対象として)送信したデータの2つ引数が必要
       onSuccess: (res, variables) => {
         const previousRecords = queryClient.getQueryData<Record[]>(['records'])
@@ -135,7 +145,6 @@ export const useMutateRecords = () => {
         // キャッシュされた records のリストを取得
         // キャッシュ：recordsは、useQueryRecords.tsのuseQueryで定義
         const previousRecords = queryClient.getQueryData<Record[]>(['records'])
-        debugger
         if (previousRecords) {
           queryClient.setQueryData<Record[]>(
             ['records'],
@@ -155,7 +164,6 @@ export const useMutateRecords = () => {
       },
     }
   )
-  // 3つのMutationを返す
   return {
     createRecordMutation,
     updateRecordMutation,

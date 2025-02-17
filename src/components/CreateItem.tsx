@@ -8,10 +8,12 @@ import {
 } from '@heroicons/react/24/solid'
 import { useMutateRecords } from '../hooks/useMutateRecords'
 import { useMutateAuth } from '../hooks/useMutateAuth'
+import { useLoading } from './LoadingContext'
 
 export const CreateItem = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  // Stateも渡すことが出来る
   const { createRecordMutation } = useMutateRecords()
   const { logoutMutation } = useMutateAuth()
   // これは自分がカスタムしたuseStoreとは違う
@@ -19,8 +21,10 @@ export const CreateItem = () => {
   const [title, setTitle] = useState('')
   const [genre, setGenre] = useState('')
   const [releaseYear, setReleaseYear] = useState('')
+  const { isLoading } = useLoading()
 
   const submitRecordHandler = (e: FormEvent<HTMLFormElement>) => {
+    if (isLoading) return
     e.preventDefault()
     createRecordMutation.mutate({
       artist: artist,

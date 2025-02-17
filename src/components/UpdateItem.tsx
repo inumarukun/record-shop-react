@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/solid'
 import useRecord from '../store'
 import { useMutateRecords } from '../hooks/useMutateRecords'
+import { useLoading } from './LoadingContext'
 
 export const UpdateItem = () => {
   const navigate = useNavigate()
@@ -17,6 +18,7 @@ export const UpdateItem = () => {
   const { editedRecord } = useRecord()
   const updateRecord = useRecord((state) => state.updateEditedRecord)
   const { updateRecordMutation } = useMutateRecords()
+  const { isLoading } = useLoading()
 
   const logout = async () => {
     await logoutMutation.mutateAsync()
@@ -29,6 +31,7 @@ export const UpdateItem = () => {
   }
 
   const submitRecordHandler = (e: FormEvent<HTMLFormElement>) => {
+    if (isLoading) return
     e.preventDefault()
     updateRecordMutation.mutate(editedRecord)
   }

@@ -6,6 +6,7 @@ import axios from 'axios'
 import { CsrfToken } from './types'
 import { CreateItem } from './components/CreateItem'
 import { UpdateItem } from './components/UpdateItem'
+import { LoadingProvider } from './components/LoadingContext'
 
 // Appコンポーネントはアプリが起動した時に実行される
 function App() {
@@ -40,14 +41,16 @@ function App() {
     getCsrfToken()
   }, [])
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Auth />} />
-        <Route path="/recordList" element={<RecordList />} />
-        <Route path="/createItem" element={<CreateItem />} />
-        <Route path="/updateItem" element={<UpdateItem />} />
-      </Routes>
-    </BrowserRouter>
+    <LoadingProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Auth />} />
+          <Route path="/recordList" element={<RecordList />} />
+          <Route path="/createItem" element={<CreateItem />} />
+          <Route path="/updateItem" element={<UpdateItem />} />
+        </Routes>
+      </BrowserRouter>
+    </LoadingProvider>
   )
 }
 

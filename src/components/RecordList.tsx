@@ -12,23 +12,28 @@ import { useMutateAuth } from '../hooks/useMutateAuth'
 import { RecordItem } from './RecordItem'
 import ModalDialog from './ModalDialog'
 import { useMutateRecords } from '../hooks/useMutateRecords'
+import { useLoading } from './LoadingContext'
 
 export const RecordList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // <number | null> は、selectedRecordIdの型指定、number型か、null型のいずれか
   const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null)
+
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  //コンポーネントが呼ばれるたびにListをFetch
-  const { data, isLoading } = useQueryRecords()
+  //コンポーネントが呼ばれるたびに(キャッシュが無ければ)ListをFetch
+  const { data, isLoading: isLoadingFromQuery } = useQueryRecords()
   const { logoutMutation } = useMutateAuth()
   const { deleteRecordMutation } = useMutateRecords()
+  const { isLoading: isLoadingFromContext } = useLoading()
 
   const handleDeleteClick = (id: number) => {
     setSelectedRecordId(id)
-    setIsModalOpen(true) // モーダルを表示
+    setIsModalOpen(true) // モーダル表示State（ModalDialog.tsx参照）
   }
 
   const handleConfirmDelete = () => {
+    if (isLoadingFromContext) return
     if (selectedRecordId !== null) {
       console.log(`Deleting record with id: ${selectedRecordId}`)
       deleteRecordMutation.mutate(selectedRecordId) // 削除処理を実行
@@ -91,13 +96,13 @@ export const RecordList = () => {
       </form>
       {/* recordの一覧表示
         useQueryRecordsのisLoading Stateがtrueの場合、Loading...を表示
-        isLoading や isError といったプロパティは、useQuery の 戻り値 に含まれる状態を表すものであり、
+        isLoadingやisErrorといったプロパティは、useQueryの戻り値に含まれる状態を表すものであり、
         クエリが返すデータやエラーそのものの型とは異なる
         これらはクエリの実行状態（ロード中、成功、失敗など）を管理するためのプロパティ
         UseQueryResult 型は、データとエラーの型に関わらず、常にこれらのプロパティを持っている
         だからuseQueryの戻り値型指定には出てこない, return useQuery<Record[], Error>({
         StateがfalseでLoading終了＝fetch終了と判断して取得したデータをmapで展開、RecordItemコンポーネントを表示 */}
-      {isLoading ? (
+      {isLoadingFromQuery ? (
         <p>Loading...</p>
       ) : (
         // React(JSX)ではclassではなく、className
@@ -118,14 +123,14 @@ export const RecordList = () => {
             {data?.map((record) => (
               <RecordItem
                 key={record.id}
-                record={record}
                 // 呼び先のRecordItemMemoPropsではrecordプロパティで渡している、バラバラは駄目
+                record={record}
                 // id={record.id}
                 // title={record.title}
                 // artist={record.artist}
                 // genre={record.genre}
                 // release_year={record.release_year}
-                onDeleteClick={handleDeleteClick} // 削除のアクションを渡す
+                onDeleteClick={handleDeleteClick} // 削除処理を実施する関数を渡す
               />
             ))}
           </tbody>
