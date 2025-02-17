@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -10,14 +10,36 @@ import {
 import { useQueryRecords } from '../hooks/useQueryRecords'
 import { useMutateAuth } from '../hooks/useMutateAuth'
 import { RecordItem } from './RecordItem'
+import ModalDialog from './ModalDialog'
+import { useMutateRecords } from '../hooks/useMutateRecords'
 
 export const RecordList = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  debugger
   //コンポーネントが呼ばれるたびにListをFetch
   const { data, isLoading } = useQueryRecords()
   const { logoutMutation } = useMutateAuth()
+  const { deleteRecordMutation } = useMutateRecords()
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedRecordId(id)
+    setIsModalOpen(true) // モーダルを表示
+  }
+
+  const handleConfirmDelete = () => {
+    if (selectedRecordId !== null) {
+      console.log(`Deleting record with id: ${selectedRecordId}`)
+      deleteRecordMutation.mutate(selectedRecordId) // 削除処理を実行
+    }
+    setIsModalOpen(false) // モーダルを閉じる
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false) // モーダルを閉じる
+  }
+
   const submitRecordHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     navigate('/createItem')
@@ -96,16 +118,25 @@ export const RecordList = () => {
             {data?.map((record) => (
               <RecordItem
                 key={record.id}
-                id={record.id}
-                title={record.title}
-                artist={record.artist}
-                genre={record.genre}
-                release_year={record.release_year}
+                record={record}
+                // 呼び先のRecordItemMemoPropsではrecordプロパティで渡している、バラバラは駄目
+                // id={record.id}
+                // title={record.title}
+                // artist={record.artist}
+                // genre={record.genre}
+                // release_year={record.release_year}
+                onDeleteClick={handleDeleteClick} // 削除のアクションを渡す
               />
             ))}
           </tbody>
         </table>
       )}
+      {/* モーダルを表示 */}
+      <ModalDialog
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   )
 }
