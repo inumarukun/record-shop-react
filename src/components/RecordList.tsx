@@ -16,6 +16,7 @@ import { useLoading } from './LoadingContext'
 
 export const RecordList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [title, setTitle] = useState<string>('')
   // <number | null> は、selectedRecordIdの型指定、number型か、null型のいずれか
   const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null)
 
@@ -27,8 +28,9 @@ export const RecordList = () => {
   const { deleteRecordMutation } = useMutateRecords()
   const { isLoading: isLoadingFromContext } = useLoading()
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: number, title: string) => {
     setSelectedRecordId(id)
+    setTitle(title)
     setIsModalOpen(true) // モーダル表示State（ModalDialog.tsx参照）
   }
 
@@ -139,6 +141,7 @@ export const RecordList = () => {
       {/* モーダルを表示 */}
       <ModalDialog
         isOpen={isModalOpen}
+        title={title}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
       />

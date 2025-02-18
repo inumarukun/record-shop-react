@@ -8,7 +8,7 @@ import { Record } from '../types'
 // onDeleteClickを追加するため新しいtypeを作成した
 type RecordItemMemoProps = {
   record: Omit<Record, 'created_at' | 'updated_at'> // recordオブジェクトとして渡す
-  onDeleteClick: (id: number) => void // 削除ボタン押下時の関数
+  onDeleteClick: (id: number, title: string) => void // 削除ボタン押下時の関数
 }
 
 // FCは、Functional Componentの略で、Reactで関数型コンポーネントを型指定するための型エイリアス
@@ -64,7 +64,7 @@ const RecordItemMemo: FC<RecordItemMemoProps> = ({ record, onDeleteClick }) => {
           className="h-5 w-5 text-blue-500 cursor-pointer"
           onClick={() => {
             // deleteRecordMutation.mutate(id)
-            onDeleteClick(id)
+            onDeleteClick(id, title) // 渡された関数に()をつければ実行
           }}
         />
       </td>

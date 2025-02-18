@@ -1,13 +1,15 @@
 // ModalDialog.tsx
 type ModalDialogProps = {
   isOpen: boolean
-  onClose: () => void
+  title: string
+  onClose: () => void // 引数なし戻り値voidの関数型
   onConfirm: () => void
 }
 
 const ModalDialog: React.FC<ModalDialogProps> = ({
   // 引数
   isOpen,
+  title,
   onClose, // ダイアログNo押下時の関数
   onConfirm, // ダイロフログOk押下時の関数
 }) => {
@@ -24,7 +26,7 @@ const ModalDialog: React.FC<ModalDialogProps> = ({
       {/*/ rounded-lg: border-radius, shadow-xl: box-shadow */}
       <div className="bg-white p-6 rounded-lg shadow-xl text-center z-60">
         <h2 className="text-lg font-semibold mb-4">Confirmation of deletion</h2>
-        <p className="mb-4">Do you really want to delete it?</p>
+        <p className="mb-4">Do you really want to delete "{title}"?</p>
         {/* gap: 行や列の間のすき間、段組み、フレックス、グリッドコンテナーに適用 */}
         <div className="flex justify-center gap-4">
           <button
