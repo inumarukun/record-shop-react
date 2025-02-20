@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
 import useStore from '../store'
 import { Record } from '../types'
+import { useAuth } from '../context/AuthContext'
 
 // Record型から 'created_at' と 'updated_at' を省略
 // onDeleteClickを追加するため新しいtypeを作成した
@@ -20,7 +21,7 @@ type RecordItemMemoProps = {
 // コンポーネントの定義が簡潔
 const RecordItemMemo: FC<RecordItemMemoProps> = ({ record, onDeleteClick }) => {
   // recordオブジェクトの各プロパティを分解代入する
-  const { id, title, artist, genre, release_year } = record
+  const { id, title, artist, genre, style, release_year } = record
   // props
   // id,
   // title,
@@ -30,29 +31,34 @@ const RecordItemMemo: FC<RecordItemMemoProps> = ({ record, onDeleteClick }) => {
   // }) => {
   const navigate = useNavigate()
   const updateRecord = useStore((state) => state.updateEditedRecord)
-  // jsx
+  const { username } = useAuth()
+
   // jsxは親エレメントは1つでなければいけない
   return (
     <tr>
       <td>{artist}</td>
       <td>{title}</td>
       <td>{genre}</td>
+      <td>{style}</td>
       <td>{release_year}</td>
       <td>
         {/* PencilIcon押下時、zustand(useStore)から読み込んだupdateTask呼出し↑（propsで受け取っていたidとtitleを引数で渡す） */}
-        <PencilIcon
-          className="h-5 w-5 mx-1 text-blue-500 cursor-pointer"
-          onClick={() => {
-            updateRecord({
-              id: id,
-              title: title,
-              artist: artist,
-              genre: genre,
-              release_year: release_year,
-            })
-            navigate('/updateItem')
-          }}
-        />
+        {username ? (
+          <PencilIcon
+            className="h-5 w-5 mx-1 text-blue-500 cursor-pointer"
+            onClick={() => {
+              updateRecord({
+                id: id,
+                title: title,
+                artist: artist,
+                genre: genre,
+                style: style,
+                release_year: release_year,
+              })
+              navigate('/updateItem')
+            }}
+          />
+        ) : null}
       </td>
       <td>
         {/* TrashIcon押下時、useMutateTaskカスタムフックからdeleteRecordMutation呼出し↑ */}
@@ -60,13 +66,15 @@ const RecordItemMemo: FC<RecordItemMemoProps> = ({ record, onDeleteClick }) => {
         {/* もしアロー関数で囲んでないとクリック時ではなくレンダリング時に実行する↑もだが */}
         {/* クリック時に関数を実行するのではなく、関数の結果を参照すしてまうイメージ */}
         {/* 関数の参照に()をつければそれは実行するということ */}
-        <TrashIcon
-          className="h-5 w-5 text-blue-500 cursor-pointer"
-          onClick={() => {
-            // deleteRecordMutation.mutate(id)
-            onDeleteClick(id, title) // 渡された関数に()をつければ実行
-          }}
-        />
+        {username ? (
+          <TrashIcon
+            className="h-5 w-5 text-blue-500 cursor-pointer"
+            onClick={() => {
+              // deleteRecordMutation.mutate(id)
+              onDeleteClick(id, title) // 渡された関数に()をつければ実行
+            }}
+          />
+        ) : null}
       </td>
     </tr>
   )

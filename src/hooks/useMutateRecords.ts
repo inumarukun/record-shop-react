@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Record } from '../types'
 import useRecord from '../store'
 import { useError } from './useError'
-import { useLoading } from '../components/LoadingContext'
+import { useLoading } from '../context/LoadingContext'
 
 // カスタムフックは複数のコンポーネントの中に存在する共通の処理を取り出して作成した関数
 export const useMutateRecords = () => {
@@ -103,6 +103,7 @@ export const useMutateRecords = () => {
           artist: record.artist,
           title: record.title,
           genre: record.genre,
+          style: record.style,
           release_year: record.release_year,
         }
       ),

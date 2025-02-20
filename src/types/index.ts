@@ -3,6 +3,7 @@ export type Record = {
   title: string
   artist: string
   genre: string
+  style: string
   release_year: number
   created_at: Date
   updated_at: Date

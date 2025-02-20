@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react'
-import { CheckBadgeIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
+import { MusicalNoteIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
 import { useMutateAuth } from '../hooks/useMutateAuth'
 
 export const Auth = () => {
@@ -63,7 +63,7 @@ export const Auth = () => {
         {/* h：height, w: width, mr: margin-right */}
         {/* h-8: 単位はremだが8remというわけではなく2rem、そうtailWidが決めてる、より直感的というてい */}
         {/* 500は、色のシェード（明暗の度合い）、通常100から900まであり小さいほど明るい、大きいほど暗い色、500は中間 */}
-        <CheckBadgeIcon className="h-8 w-8 mr-2 text-blue-500" />
+        <MusicalNoteIcon className="h-8 w-8 mr-2 text-blue-500" />
         {/* text-3xl: 文字サイズを30pxに設定、3xl=1.875rem (30px)、文字サイズのプリセット */}
         {/*	font-extrabold = font-weight: 800; */}
         <span className="text-center text-3xl font-extrabold">
@@ -111,8 +111,11 @@ export const Auth = () => {
           {/* disabled: emailかpwどちらか空なら無効化 */}
           {/* disabled:opacity-40: ボタンが無効（disabled）の場合、透過度（opacity）を40%に設定 */}
           {/* rounded: 角を標準的な丸み（4px）で丸く */}
+          {/* w-full: ボタンの幅を親要素と同じ幅に設定 
+          通常ブロックレベルの要素（幅が親要素いっぱい）なので、
+          親要素が制限されていなくても、両方が同じ幅を持つことがある */}
           <button
-            className="disabled:opacity-40 py-2 px-4 rounded text-white bg-indigo-600"
+            className="disabled:opacity-40 py-2 px-4 rounded text-white bg-indigo-600 w-full"
             disabled={!email || !pw}
             type="submit"
           >

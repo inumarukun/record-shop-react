@@ -7,7 +7,7 @@ import { CsrfToken } from './types'
 import { CreateItem } from './components/CreateItem'
 import { UpdateItem } from './components/UpdateItem'
 import { AuthProvider } from './context/AuthContext'
-import { LoadingProvider } from './components/LoadingContext'
+import { LoadingProvider } from './context/LoadingContext'
 
 // Appコンポーネントはアプリが起動した時に実行される
 function App() {

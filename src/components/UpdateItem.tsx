@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMutateAuth } from '../hooks/useMutateAuth'
 import {
+  ArrowRightStartOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
   ArrowUturnLeftIcon,
   MusicalNoteIcon,
 } from '@heroicons/react/24/solid'
 import useRecord from '../store'
 import { useMutateRecords } from '../hooks/useMutateRecords'
-import { useLoading } from './LoadingContext'
+import { useLoading } from '../context/LoadingContext'
+import { useAuth } from '../context/AuthContext'
 
 export const UpdateItem = () => {
   const navigate = useNavigate()
@@ -19,7 +21,11 @@ export const UpdateItem = () => {
   const updateRecord = useRecord((state) => state.updateEditedRecord)
   const { updateRecordMutation } = useMutateRecords()
   const { isLoading } = useLoading()
+  const { username } = useAuth()
 
+  const login = async () => {
+    navigate('/login')
+  }
   const logout = async () => {
     await logoutMutation.mutateAsync()
     queryClient.removeQueries(['records'])
@@ -40,16 +46,30 @@ export const UpdateItem = () => {
     <div className="flex flex-col px-5 min-h-screen text-gray-600 font-mono">
       <div className="flex justify-between items-center mt-3">
         <div className="flex items-center">
-          <MusicalNoteIcon className="h-6 w-6 mr-3 text-indigo-500 cursor-pointer" />
+          <MusicalNoteIcon className="h-8 w-8 mr-3 text-indigo-500 cursor-pointer" />
           {/* text-3xl: 文字サイズを30pxに設定、3xl=1.875rem (30px)、文字サイズのプリセット */}
           <span className="text-center text-3xl font-extrabold">
             Record Shop Manager
           </span>
         </div>
-        <ArrowRightEndOnRectangleIcon
-          onClick={logout}
-          className="h-6 w-6 my-3 text-blue-500 cursor-pointer"
-        />
+        <div className="flex items-center space-x-3">
+          <div>
+            {username ? (
+              <div className="flex space-x-2">
+                <span>{username}</span>
+                <ArrowRightEndOnRectangleIcon
+                  className="h-6 w-6 text-blue-500 cursor-pointer"
+                  onClick={logout}
+                />
+              </div>
+            ) : (
+              <ArrowRightStartOnRectangleIcon
+                className="h-6 w-6 my-6 text-blue-500 cursor-pointer"
+                onClick={login}
+              />
+            )}
+          </div>
+        </div>
       </div>
       <ArrowUturnLeftIcon
         onClick={back}
@@ -100,6 +120,21 @@ export const UpdateItem = () => {
               }
               type="text"
               value={editedRecord.genre || ''}
+            ></input>
+          </div>
+          <div>
+            <label className="block font-bold" htmlFor="style">
+              Style:
+            </label>
+            <input
+              className="border border-gray-300 focus:outline-none focus:border-blue-500 mb-2 p-2 rounded w-full"
+              id="style"
+              name="style"
+              onChange={(e) =>
+                updateRecord({ ...editedRecord, style: e.target.value })
+              }
+              type="text"
+              value={editedRecord.style || ''}
             ></input>
           </div>
           <div>

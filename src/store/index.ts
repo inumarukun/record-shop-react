@@ -6,6 +6,7 @@ type EditedRecord = {
   title: string
   artist: string
   genre: string
+  style: string
   release_year: number
 }
 
@@ -23,7 +24,14 @@ type State = {
 // で渡したset(get)関数がuserecordで戻された先でも動作するクロージャの例になっている
 const useRecord = create<State>((set) => ({
   // Stateの初期値設定
-  editedRecord: { id: 0, title: '', artist: '', genre: '', release_year: 0 },
+  editedRecord: {
+    id: 0,
+    title: '',
+    artist: '',
+    genre: '',
+    style: '',
+    release_year: 0,
+  },
 
   updateEditedRecord: (payload) =>
     // set: createメソッドに備わっている関数、storeの状態を更新する
@@ -38,6 +46,7 @@ const useRecord = create<State>((set) => ({
         title: '',
         artist: '',
         genre: '',
+        style: '',
         release_year: 0,
       },
     }),

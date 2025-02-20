@@ -13,11 +13,10 @@ import { useMutateAuth } from '../hooks/useMutateAuth'
 import { RecordItem } from './RecordItem'
 import ModalDialog from './ModalDialog'
 import { useMutateRecords } from '../hooks/useMutateRecords'
-import { useLoading } from './LoadingContext'
+import { useLoading } from '../context/LoadingContext'
 import { useAuth } from '../context/AuthContext'
 
 export const RecordList = () => {
-  debugger
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [title, setTitle] = useState<string>('')
   // <number | null> は、selectedRecordIdの型指定、number型か、null型のいずれか
@@ -59,6 +58,7 @@ export const RecordList = () => {
     //     title: editedRecord.title,
     //     artist: editedRecord.artist,
     //     genre: editedRecord.genre,
+    //     style: editedRecord.style,
     //     release_year: editedRecord.release_year,
     //   })
     // } else {
@@ -109,13 +109,15 @@ export const RecordList = () => {
       {/* Userが入力するためのForm、submitボタン押下時submitTaskHandlerが呼び出される↑ */}
       <form onSubmit={submitRecordHandler}>
         {/* add button */}
-        <button
-          className="disabled:opacity-40 py-2 px-3 text-white bg-indigo-600 rounded"
-          //disabled={!editedRecord.title}
-        >
-          Add Record
-          {/* {editedRecord.id === 0 ? 'Create' : 'Update'} */}
-        </button>
+        {username ? (
+          <button
+            className="disabled:opacity-40 py-2 px-3 text-white bg-indigo-600 rounded"
+            //disabled={!editedRecord.title}
+          >
+            Add Record
+            {/* {editedRecord.id === 0 ? 'Create' : 'Update'} */}
+          </button>
+        ) : null}
       </form>
       {/* recordの一覧表示
         useQueryRecordsのisLoading Stateがtrueの場合、Loading...を表示
@@ -135,6 +137,7 @@ export const RecordList = () => {
               <th>Artist</th>
               <th>Title</th>
               <th>Genre</th>
+              <th>Style</th>
               <th>Release Year</th>
               <th></th>
               <th></th>
@@ -152,6 +155,7 @@ export const RecordList = () => {
                 // title={record.title}
                 // artist={record.artist}
                 // genre={record.genre}
+                // style={record.style}
                 // release_year={record.release_year}
                 onDeleteClick={handleDeleteClick} // 削除処理を実施する関数を渡す
               />
