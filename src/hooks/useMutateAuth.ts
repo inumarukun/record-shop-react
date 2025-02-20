@@ -4,11 +4,13 @@ import { useMutation } from '@tanstack/react-query'
 import useRecord from '../store'
 import { Credential } from '../types'
 import { useError } from '../hooks/useError'
+import { useAuth } from '../context/AuthContext'
 
 export const useMutateAuth = () => {
   const navigate = useNavigate()
   const resetEditedRecord = useRecord((state) => state.resetEditedRecord)
   const { switchErrorHandling } = useError()
+  const { setUsername } = useAuth()
 
   // react-queryによるuseMutation
   // useMutation: APIリクエストの状態を管理するための便利なフックで、成功やエラー時の処理も簡単に設定できる
@@ -24,7 +26,9 @@ export const useMutateAuth = () => {
     async (user: Credential) =>
       await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/login`, user),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        // echo.ContextのJSONがデータをdataにラッピングしてるのでこうなる
+        setUsername(data.data.email)
         // axios.get等と違ってサーバーに遷移するわけではない
         // 直接REACTの画面に遷移、定義はApp.tsx参照
         navigate('/recordList')
@@ -48,7 +52,6 @@ export const useMutateAuth = () => {
       ),
     {
       onError: (err: any) => {
-        debugger
         if (err.response.data.message) {
           switchErrorHandling(err.response.data.message)
         } else {
@@ -63,6 +66,7 @@ export const useMutateAuth = () => {
       await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/logout`),
     {
       onSuccess: () => {
+        setUsername('')
         resetEditedRecord()
         navigate('/')
       },

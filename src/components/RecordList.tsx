@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import {
+  ArrowRightStartOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
   MusicalNoteIcon,
 } from '@heroicons/react/24/solid'
@@ -13,8 +14,10 @@ import { RecordItem } from './RecordItem'
 import ModalDialog from './ModalDialog'
 import { useMutateRecords } from '../hooks/useMutateRecords'
 import { useLoading } from './LoadingContext'
+import { useAuth } from '../context/AuthContext'
 
 export const RecordList = () => {
+  debugger
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [title, setTitle] = useState<string>('')
   // <number | null> は、selectedRecordIdの型指定、number型か、null型のいずれか
@@ -27,6 +30,7 @@ export const RecordList = () => {
   const { logoutMutation } = useMutateAuth()
   const { deleteRecordMutation } = useMutateRecords()
   const { isLoading: isLoadingFromContext } = useLoading()
+  const { username } = useAuth()
 
   const handleDeleteClick = (id: number, title: string) => {
     setSelectedRecordId(id)
@@ -37,7 +41,6 @@ export const RecordList = () => {
   const handleConfirmDelete = () => {
     if (isLoadingFromContext) return
     if (selectedRecordId !== null) {
-      console.log(`Deleting record with id: ${selectedRecordId}`)
       deleteRecordMutation.mutate(selectedRecordId) // 削除処理を実行
     }
     setIsModalOpen(false) // モーダルを閉じる
@@ -62,6 +65,9 @@ export const RecordList = () => {
     //   updateRecordMutation.mutate(editedRecord)
     // }
   }
+  const login = async () => {
+    navigate('/login')
+  }
   const logout = async () => {
     // logoutが完了するまで、次の処理にいかずに待つ
     // (logout以外の非同期処理/イベントループは通常通り実施されている)
@@ -80,10 +86,25 @@ export const RecordList = () => {
             Record Shop Manager
           </span>
         </div>
-        <ArrowRightEndOnRectangleIcon
-          onClick={logout}
-          className="h-6 w-6 my-6 text-blue-500 cursor-pointer"
-        />
+        {/* 横並びにするためflex指定(デフォルトで横並びに) */}
+        <div className="flex items-center space-x-3">
+          <div>
+            {username ? (
+              <div className="flex space-x-2">
+                <span>{username}</span>
+                <ArrowRightEndOnRectangleIcon
+                  className="h-6 w-6 text-blue-500 cursor-pointer"
+                  onClick={logout}
+                />
+              </div>
+            ) : (
+              <ArrowRightStartOnRectangleIcon
+                className="h-6 w-6 my-6 text-blue-500 cursor-pointer"
+                onClick={login}
+              />
+            )}
+          </div>
+        </div>
       </div>
       {/* Userが入力するためのForm、submitボタン押下時submitTaskHandlerが呼び出される↑ */}
       <form onSubmit={submitRecordHandler}>

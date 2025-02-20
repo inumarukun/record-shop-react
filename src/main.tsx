@@ -23,3 +23,15 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>
 )
+
+// Reactで2回useEffectが実行される原因は、StrictModeだから
+// 簡単な方法としてStrictModeをOffにする
+// VITEは以下
+// const root = createRoot(document.getElementById('root')!)
+
+// root.render(
+//   <QueryClientProvider client={queryClient}>
+//     <App />
+//     <ReactQueryDevtools initialIsOpen={false} />
+//   </QueryClientProvider>
+// )

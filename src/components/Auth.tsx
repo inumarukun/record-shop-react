@@ -11,12 +11,10 @@ export const Auth = () => {
   // 関数定義
   const { loginMutation, registerMutation } = useMutateAuth()
 
-  // ↓の(Formタグの)submit押下時(onSubmitイベント発生時)に実行される
   const submitAuthHandler = async (e: FormEvent<HTMLFormElement>) => {
     // ブラウザのデフォルトの動作を防ぐ
     // ReactなどのフロントFwは、非同期操作やAPI呼出しを行うことが多いため、フォームの送信後にページのリロードを避ける必要がある
     e.preventDefault()
-    debugger
     // loginモードの場合
     if (isLogin) {
       // useMutationで登録した関数に引数を渡している
