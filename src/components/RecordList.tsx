@@ -1,15 +1,8 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
-import {
-  ArrowRightStartOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
-  MusicalNoteIcon,
-} from '@heroicons/react/24/solid'
 // この中括弧は、名前付きエクスポートをインポートしている、オブジェクト分割代入から名前のものだけ取り出すのに必要
 // もし、useMutateAuthが単一の値のみを返しているのであればimport、constでの｛｝は不要、例: axios
 import { useQueryRecords } from '../hooks/useQueryRecords'
-import { useMutateAuth } from '../hooks/useMutateAuth'
 import { RecordItem } from './RecordItem'
 import ModalDialog from './ModalDialog'
 import { useMutateRecords } from '../hooks/useMutateRecords'
@@ -23,10 +16,9 @@ export const RecordList = () => {
   const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null)
 
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   //コンポーネントが呼ばれるたびに(キャッシュが無ければ)ListをFetch
+  debugger
   const { data, isLoading: isLoadingFromQuery } = useQueryRecords()
-  const { logoutMutation } = useMutateAuth()
   const { deleteRecordMutation } = useMutateRecords()
   const { isLoading: isLoadingFromContext } = useLoading()
   const { username } = useAuth()
@@ -65,47 +57,9 @@ export const RecordList = () => {
     //   updateRecordMutation.mutate(editedRecord)
     // }
   }
-  const login = async () => {
-    navigate('/login')
-  }
-  const logout = async () => {
-    // logoutが完了するまで、次の処理にいかずに待つ
-    // (logout以外の非同期処理/イベントループは通常通り実施されている)
-    await logoutMutation.mutateAsync()
-    queryClient.removeQueries(['records'])
-  }
   return (
     // jsx
-    <div className="flex flex-col px-5 min-h-screen text-gray-600 font-mono">
-      {/* タイトルとアイコン */}
-      <div className="flex justify-between  items-center my-3">
-        <div className="flex items-center">
-          <MusicalNoteIcon className="h-8 w-8 mr-3 text-indigo-500 cursor-pointer" />
-          {/* text-3xl: 文字サイズを30pxに設定、3xl=1.875rem (30px)、文字サイズのプリセット */}
-          <span className="text-center text-3xl font-extrabold">
-            Record Shop Manager
-          </span>
-        </div>
-        {/* 横並びにするためflex指定(デフォルトで横並びに) */}
-        <div className="flex items-center space-x-3">
-          <div>
-            {username ? (
-              <div className="flex space-x-2">
-                <span>{username}</span>
-                <ArrowRightEndOnRectangleIcon
-                  className="h-6 w-6 text-blue-500 cursor-pointer"
-                  onClick={logout}
-                />
-              </div>
-            ) : (
-              <ArrowRightStartOnRectangleIcon
-                className="h-6 w-6 my-6 text-blue-500 cursor-pointer"
-                onClick={login}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="px-5 text-gray-600 font-mono mt-2">
       {/* Userが入力するためのForm、submitボタン押下時submitTaskHandlerが呼び出される↑ */}
       <form onSubmit={submitRecordHandler}>
         {/* add button */}

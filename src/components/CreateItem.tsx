@@ -1,30 +1,18 @@
 import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
-import {
-  ArrowRightStartOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
-  ArrowUturnLeftIcon,
-  MusicalNoteIcon,
-} from '@heroicons/react/24/solid'
+import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 import { useMutateRecords } from '../hooks/useMutateRecords'
-import { useMutateAuth } from '../hooks/useMutateAuth'
 import { useLoading } from '../context/LoadingContext'
-import { useAuth } from '../context/AuthContext'
 
 export const CreateItem = () => {
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  // Stateも渡すことが出来る
   const { createRecordMutation } = useMutateRecords()
-  const { logoutMutation } = useMutateAuth()
   const [artist, setArtist] = useState('')
   const [title, setTitle] = useState('')
   const [genre, setGenre] = useState('')
   const [style, setStyle] = useState('')
   const [releaseYear, setReleaseYear] = useState('')
   const { isLoading } = useLoading()
-  const { username } = useAuth()
 
   const submitRecordHandler = (e: FormEvent<HTMLFormElement>) => {
     if (isLoading) return
@@ -38,48 +26,13 @@ export const CreateItem = () => {
     })
   }
 
-  const login = async () => {
-    navigate('/login')
-  }
-  const logout = async () => {
-    await logoutMutation.mutateAsync()
-    queryClient.removeQueries(['records'])
-  }
-
   const back = () => {
     // navigate('/recordList')
     navigate(-1)
   }
 
   return (
-    <div className="flex flex-col px-5 min-h-screen text-gray-600 font-mono">
-      <div className="flex justify-between items-center mt-3">
-        <div className="flex items-center">
-          <MusicalNoteIcon className="h-8 w-8 mr-3 text-indigo-500 cursor-pointer" />
-          {/* text-3xl: 文字サイズを30pxに設定、3xl=1.875rem (30px)、文字サイズのプリセット */}
-          <span className="text-center text-3xl font-extrabold">
-            Record Shop Manager
-          </span>
-        </div>
-        <div className="flex items-center space-x-3">
-          <div>
-            {username ? (
-              <div className="flex space-x-2">
-                <span>{username}</span>
-                <ArrowRightEndOnRectangleIcon
-                  className="h-6 w-6 text-blue-500 cursor-pointer"
-                  onClick={logout}
-                />
-              </div>
-            ) : (
-              <ArrowRightStartOnRectangleIcon
-                className="h-6 w-6 my-6 text-blue-500 cursor-pointer"
-                onClick={login}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="px-5 text-gray-600 font-mono mt-2">
       <ArrowUturnLeftIcon
         onClick={back}
         className="h-6 w-6 my-3 text-blue-500 cursor-pointer"

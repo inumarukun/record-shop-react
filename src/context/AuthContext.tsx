@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode } from 'react'
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react'
 
 interface AuthContextType {
   username: string | null
@@ -21,7 +27,18 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [username, setUsername] = useState<string | null>(null)
+  // localStorageからusernameを復元
+  const savedUsername = localStorage.getItem('username')
+  const [username, setUsername] = useState<string | null>(savedUsername)
+
+  // usernameが更新された時にlocalStorageにも保存
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem('username', username)
+    } else {
+      localStorage.removeItem('username')
+    }
+  }, [username])
 
   return (
     <AuthContext.Provider value={{ username, setUsername }}>

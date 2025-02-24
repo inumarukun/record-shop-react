@@ -1,3 +1,4 @@
+// 2度おし防止コンテキスト
 import { createContext, useContext, useState } from 'react'
 
 // コンテキストで使用する型を定義

@@ -56,6 +56,7 @@ export const useMutateRecords = () => {
         // useQueryRecords.tsのuseQueryで定義
         // useQueryは、react-queryの機能で、useQueryTasks.tsではプロパティを定義しているだけ
         const previousRecords = queryClient.getQueryData<Record[]>(['records'])
+        debugger
         // 既存のcache: 'records'が存在した場合、その末尾に新しく生成したrecordsを追加
         if (previousRecords) {
           const updatedRecords = [...previousRecords, res.data]
@@ -113,6 +114,8 @@ export const useMutateRecords = () => {
       },
       // putの場合は、レスポンスデータと、 (更新対象として)送信したデータの2つ引数が必要
       onSuccess: (res, variables) => {
+        debugger
+        setIsLoading(false)
         const previousRecords = queryClient.getQueryData<Record[]>(['records'])
         // 既存のキャッシュが存在する場合
         if (previousRecords) {
@@ -127,6 +130,8 @@ export const useMutateRecords = () => {
         navigate('/recordList')
       },
       onError: (err: any) => {
+        debugger
+        setIsLoading(false)
         if (err.response.data.message) {
           switchErrorHandling(err.response.data.message)
         } else {
@@ -143,6 +148,7 @@ export const useMutateRecords = () => {
     {
       // 通常_の部分はresponseが返る、variablesはdelete呼出し時に渡されたidが渡される
       onSuccess: (_, variables) => {
+        setIsLoading(false)
         // キャッシュされた records のリストを取得
         // キャッシュ：recordsは、useQueryRecords.tsのuseQueryで定義
         const previousRecords = queryClient.getQueryData<Record[]>(['records'])
@@ -157,6 +163,7 @@ export const useMutateRecords = () => {
         resetEditedRecord()
       },
       onError: (err: any) => {
+        setIsLoading(false)
         if (err.response.data.message) {
           switchErrorHandling(err.response.data.message)
         } else {

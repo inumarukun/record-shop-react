@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { Auth } from './components/Auth'
 import { RecordList } from './components/RecordList'
 import axios from 'axios'
@@ -8,9 +8,22 @@ import { CreateItem } from './components/CreateItem'
 import { UpdateItem } from './components/UpdateItem'
 import { AuthProvider } from './context/AuthContext'
 import { LoadingProvider } from './context/LoadingContext'
+import Navbar from './components/Navbar'
 
 // Appコンポーネントはアプリが起動した時に実行される
 function App() {
+  // Navbar の表示・非表示を制御するラッパーコンポーネント
+  // useLocation()フックは、Routerコンポーネント内で呼出さないといけないため
+  const NavbarWrapper = () => {
+    // 現在のURLのパスを取得
+    const location = useLocation() // useLocation をここで使用
+
+    // 特定の画面（ログイン画面）でNavbarを非表示にする
+    const hideNavbar = location.pathname === '/login'
+
+    return <>{!hideNavbar && <Navbar />}</>
+  }
+
   // useEffect - React Hookの1つ
   // コンポーネントがレンダリングされるタイミングでサイドエフェクトを実行するために使用
   // コンポーネントのライフサイクルに合わせてサイドエフェクトを実行するために使用
@@ -47,6 +60,8 @@ function App() {
     <AuthProvider>
       <LoadingProvider>
         <BrowserRouter>
+          {/* Navbar はページ遷移と無関係に表示されるものなので、<Routes> の外に配置 */}
+          <NavbarWrapper />
           <Routes>
             <Route path="/" element={<RecordList />} />
             <Route path="/login" element={<Auth />} />
