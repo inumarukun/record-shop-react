@@ -15,3 +15,12 @@ export type Credential = {
   email: string
   password: string
 }
+export type TrackInfo = {
+  trackNumber: number
+  trackTitle: string
+}
+export type Detail = {
+  title: string
+  album_image_url: string
+  tracks: TrackInfo[]
+}

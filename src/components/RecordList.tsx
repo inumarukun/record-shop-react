@@ -17,7 +17,6 @@ export const RecordList = () => {
 
   const navigate = useNavigate()
   //コンポーネントが呼ばれるたびに(キャッシュが無ければ)ListをFetch
-  debugger
   const { data, isLoading: isLoadingFromQuery } = useQueryRecords()
   const { deleteRecordMutation } = useMutateRecords()
   const { isLoading: isLoadingFromContext } = useLoading()

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { Auth } from './components/Auth'
 import { RecordList } from './components/RecordList'
+import { RecordDetail } from './components/RecordDetail'
 import axios from 'axios'
 import { CsrfToken } from './types'
 import { CreateItem } from './components/CreateItem'
@@ -66,6 +67,7 @@ function App() {
             <Route path="/" element={<RecordList />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/recordList" element={<RecordList />} />
+            <Route path="/records/:title" element={<RecordDetail />} />
             <Route path="/createItem" element={<CreateItem />} />
             <Route path="/updateItem" element={<UpdateItem />} />
           </Routes>

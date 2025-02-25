@@ -1,5 +1,5 @@
 import { FC, memo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
 import useStore from '../store'
 import { Record } from '../types'
@@ -37,7 +37,14 @@ const RecordItemMemo: FC<RecordItemMemoProps> = ({ record, onDeleteClick }) => {
   return (
     <tr>
       <td>{artist}</td>
-      <td>{title}</td>
+      <td>
+        <Link
+          className="text-blue-500 underline hover:text-blue-700 visited:text-purple-600"
+          to={`/records/${title}`}
+        >
+          {title}
+        </Link>
+      </td>
       <td>{genre}</td>
       <td>{style}</td>
       <td>{release_year}</td>
