@@ -87,6 +87,7 @@ export const useMutateRecords = () => {
       onError: (err: any) => {
         setIsLoading(false)
         if (err.response.data.message) {
+          // validateエラーはこっち
           switchErrorHandling(err.response.data.message)
         } else {
           switchErrorHandling(err.response.data)

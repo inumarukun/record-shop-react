@@ -20,7 +20,7 @@ export type TrackInfo = {
   trackTitle: string
 }
 export type Detail = {
-  title: string
-  album_image_url: string
+  recordTitle: string
+  albumImageUrl: string
   tracks: TrackInfo[]
 }

@@ -38,14 +38,21 @@ export const RecordDetail: React.FC = () => {
     navigate(-1)
   }
 
+  debugger
   return (
     <div className="px-5">
       <ArrowUturnLeftIcon
         onClick={back}
         className="h-6 w-6 my-3 text-blue-500 cursor-pointer"
       />
-      <h2>{recordDetail.title}</h2>
-      <img src={recordDetail.album_image_url} alt="Album Image" />
+      <h2>{recordDetail.recordTitle}</h2>
+      {/* {recordDetail.album_image_url && ( */}
+      <img
+        src={`http://localhost:8080/${recordDetail.albumImageUrl}`}
+        alt={recordDetail.recordTitle}
+        style={{ maxWidth: '100%' }}
+      />
+      {/* )} */}
       <ul>
         {recordDetail.tracks.map((track, index) => (
           <li key={index}>
