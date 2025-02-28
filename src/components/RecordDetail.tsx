@@ -11,7 +11,6 @@ export const RecordDetail: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    debugger
     axios
       .get<Detail>(
         `${import.meta.env.VITE_REACT_APP_API_URL}/records/${title}`,
@@ -20,11 +19,9 @@ export const RecordDetail: React.FC = () => {
         }
       )
       .then((response) => {
-        debugger
         setRecordDetail(response.data)
       })
       .catch((error) => {
-        debugger
         console.error('There was an error fetching the record detail!', error)
       })
   }, [title])
@@ -38,28 +35,40 @@ export const RecordDetail: React.FC = () => {
     navigate(-1)
   }
 
-  debugger
   return (
-    <div className="px-5">
-      <ArrowUturnLeftIcon
-        onClick={back}
-        className="h-6 w-6 my-3 text-blue-500 cursor-pointer"
-      />
-      <h2>{recordDetail.recordTitle}</h2>
-      {/* {recordDetail.album_image_url && ( */}
-      <img
-        src={`http://localhost:8080/${recordDetail.albumImageUrl}`}
-        alt={recordDetail.recordTitle}
-        style={{ maxWidth: '100%' }}
-      />
-      {/* )} */}
-      <ul>
-        {recordDetail.tracks.map((track, index) => (
-          <li key={index}>
-            {track.trackNumber}: {track.trackTitle}
-          </li>
-        ))}
-      </ul>
+    <div className="flex px-5">
+      <div>
+        <ArrowUturnLeftIcon
+          onClick={back}
+          className="h-6 w-6 my-3 text-blue-500 cursor-pointer"
+        />
+        <h2>{recordDetail.recordTitle}</h2>
+        <div className="mb-4">
+          <img
+            src={`http://localhost:8080/${recordDetail.albumImageUrl}`}
+            alt={recordDetail.recordTitle}
+            style={{ maxWidth: '100%' }}
+          />
+        </div>
+        <ul>
+          {recordDetail.tracks.map((track, index) => (
+            <li key={index}>
+              {track.trackNumber}: {track.trackTitle}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="w-full aspect-w-16 aspect-h-9 ml-32 mt-18">
+        <iframe
+          width="50%"
+          height="50%"
+          src={`https://www.youtube.com/embed/${recordDetail.youtubeVideoId}`}
+          title={recordDetail.youtubeTitle}
+          frameBorder="1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      </div>
     </div>
   )
 }

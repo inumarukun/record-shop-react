@@ -22,5 +22,7 @@ export type TrackInfo = {
 export type Detail = {
   recordTitle: string
   albumImageUrl: string
+  youtubeTitle: string
+  youtubeVideoId: string
   tracks: TrackInfo[]
 }
